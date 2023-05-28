@@ -86,20 +86,6 @@ resource "aws_security_group" "minecraft" {
   }
 
   ingress {
-    from_port   = 25565
-    to_port     = 25565
-    protocol    = "udp"
-    cidr_blocks = var.allowlisted_cidr_ranges
-  }
-
-  ingress {
-    from_port = 19132
-    to_port = 19132
-    protocol = "tcp"
-    cidr_blocks = var.allowlisted_cidr_ranges
-  }
-
-  ingress {
     from_port = 19132
     to_port = 19132
     protocol = "udp"

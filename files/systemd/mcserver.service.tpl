@@ -34,8 +34,8 @@ ExecStart=/usr/bin/podman run \
         --env MEMORYSIZE=${papermc_server_memorysize} \
         --env TZ="America/Chicago" \
         --volume ${mcserver_data_dir}:/data:Z \
-        --publish 25565:25565 \
-        --publish 19132:19132 \
+        --publish 25565:25565/tcp \
+        --publish 19132:19132/udp \
         docker.io/marctv/minecraft-papermc-server:${papermc_container_tag}
 
 ExecStop=/usr/bin/podman stop \
