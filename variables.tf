@@ -11,9 +11,9 @@ variable "deployment_name" {
 }
 
 variable "aws_region" {
-  description = "The AWS region to deploy resources into"
-  type        = string
-  default     = "us-east-2"
+  description = "The AWS Region to deploy infrastructure into"
+  type = string
+  default = "us-east-2"
 }
 
 variable "allowlisted_cidr_ranges" {
@@ -23,30 +23,23 @@ variable "allowlisted_cidr_ranges" {
 
 # https://aws.amazon.com/ec2/pricing/on-demand/
 # https://aws.amazon.com/ec2/instance-types/
-variable "instance_type" {
+variable "ec2_instance_type" {
   description = "The EC2 instance type of the server"
   type        = string
-  default     = "r5a.large"
+  default     = "t2.small"
 }
 
-# https://hub.docker.com/r/marctv/minecraft-papermc-server/tags
-# https://github.com/mtoensing/Docker-Minecraft-PaperMC-Server
-variable "papermc_container_tag" {
-  description = "The container tag to use for the papermc container"
+# This is different for different EC2 instance types (e.g. /dev/xvdf, /dev/nvme1n1, etc)
+variable "data_volume_device_path" {
+  description = "The device path of the EBS volume for storing server data"
   type        = string
-  default     = "1.19"
+  default = "/dev/xvdf"
 }
 
 variable "papermc_server_memorysize" {
   description = "The value for the papermc container MEMORYSIZE environment variable"
   type        = string
-  default     = "14G"
-}
-
-variable "data_volume_size" {
-  description = "The size of the EBS volume for the Minecraft data"
-  type        = number
-  default     = 50
+  default     = "1G"
 }
 
 variable "private_ssh_key_dir" {
@@ -55,14 +48,8 @@ variable "private_ssh_key_dir" {
   default     = "~/.ssh"
 }
 
-variable "ebs_volume_device" {
-  description = "The device path of the additional EBS volume"
-  type        = string
-  default     = "/dev/nvme1n1"
-}
-
-variable "mcserver_data_dir" {
-  description = "The directory to store PaperMC server data"
-  type        = string
-  default     = "/var/opt/mcserver"
+variable "download_private_ssh_key" {
+  description = "Whether to download the ssh private key locally"
+  type = bool
+  default = true
 }

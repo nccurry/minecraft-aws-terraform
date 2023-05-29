@@ -2,6 +2,12 @@
 
 Terraform plan to deploy a PaperMC Minecraft Server into AWS
 
+## To-do
+
+- Automatically start / stop server based on activity
+- Automated server backups
+- Certificate management for plugin pages
+
 ## Using this plan
 
 ### Download AWS Credentials
@@ -19,6 +25,7 @@ touch terraform.tfvars
 ### Execute terraform
 
 ```shell
+terraform workspace 
 terraform init
 terraform plan
 terraform apply

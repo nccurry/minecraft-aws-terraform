@@ -1,6 +1,6 @@
 [Unit]
 Description=Mount ${mcserver_data_dir} Volume
-After=format-mcserver-volume.service
+Requires=format-mcserver-volume.service
 
 [Mount]
 What=${ebs_volume_device}

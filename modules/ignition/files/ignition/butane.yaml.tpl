@@ -1,27 +1,31 @@
 variant: fcos
 version: 1.5.0
 storage:
+  filesystems:
+  - device: ${data_volume_device_path}
+    path: /var/opt/mcserver
+    format: xfs
+    label: mcserver
+    with_mount_unit: true
   directories:
   - user:
       name: core
     group:
       name: core
-    path: /opt/mcserver
-    mode: 504
+    path: /var/opt/mcserver
+    mode: 0770
   files:
   - path: /etc/zincati/config.d/55-updates-strategy.toml
     contents:
-      source: "data:,${url_encoded_zincati_config}"
+      inline: |
+        ${indent(8, updates_strategy_toml_contents)}
+  - path: /usr/local/bin/download-papermc-plugins.sh
+    contents:
+      inline: |
+        ${indent(8, download_papermc_plugins_sh_contents)}
+    mode: 0774
 systemd:
   units:
-  - name: format-mcserver-volume.service
-    enabled: true
-    contents: |
-      ${indent(6, format_mcserver_volume_service_contents)}
-  - name: var-opt-mcserver.mount
-    enabled: true
-    contents: |
-      ${indent(6, var_opt_mcserver_mount_contents)}
   - name: download-papermc-plugins.service
     enabled: true
     contents: |

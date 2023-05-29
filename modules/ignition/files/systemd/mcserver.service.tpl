@@ -1,17 +1,11 @@
 [Unit]
 Description=PaperMC Minecraft Server
 Documentation=https://github.com/mtoensing/Docker-Minecraft-PaperMC-Server
-
 Wants=network-online.target
 After=network-online.target
-
 RequiresMountsFor=%t/containers
-
-After=var-opt-mcserver.mount
 Requires=var-opt-mcserver.mount
-
 After=download-papermc-plugins.service
-Requires=download-papermc-plugins.service
 
 [Service]
 Environment=PODMAN_SYSTEMD_UNIT=%n
@@ -19,7 +13,7 @@ Restart=on-failure
 TimeoutStopSec=70
 
 ExecStartPre=/usr/bin/podman pull \
-        docker.io/marctv/minecraft-papermc-server:${papermc_container_tag}
+        ${papermc_container_image}:${papermc_container_tag}
 
 ExecStart=/usr/bin/podman run \
         --cidfile=%t/%n.ctr-id \
@@ -38,7 +32,7 @@ ExecStart=/usr/bin/podman run \
         --publish 19132:19132/udp \
         --publish 8804:8804/tcp \
         --publish 8100:8100/tcp \
-        docker.io/marctv/minecraft-papermc-server:${papermc_container_tag}
+        ${papermc_container_image}:${papermc_container_tag}
 
 ExecStop=/usr/bin/podman stop \
         --ignore -t 10 \
