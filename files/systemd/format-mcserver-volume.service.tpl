@@ -6,7 +6,11 @@ Requires=${trimprefix(replace(ebs_volume_device, "/", "-"), "-")}.device
 [Service]
 Type=oneshot
 RemainAfterExit=true
-ExecStart=/usr/sbin/mkfs.xfs ${ebs_volume_device} -L mcserver
+# Only format the volume if it isn't already formatted
+ExecStart=/bin/bash -c '\
+  if file -s ${ebs_volume_device} | grep -q "data"; then \
+    mkfs.xfs ${ebs_volume_device} -L mcserver; \
+  fi'
 
 [Install]
 WantedBy=multi-user.target

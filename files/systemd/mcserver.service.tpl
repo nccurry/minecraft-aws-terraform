@@ -36,6 +36,8 @@ ExecStart=/usr/bin/podman run \
         --volume ${mcserver_data_dir}:/data:Z \
         --publish 25565:25565/tcp \
         --publish 19132:19132/udp \
+        --publish 8804:8804/tcp \
+        --publish 8100:8100/tcp \
         docker.io/marctv/minecraft-papermc-server:${papermc_container_tag}
 
 ExecStop=/usr/bin/podman stop \

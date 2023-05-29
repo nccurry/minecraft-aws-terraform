@@ -1,3 +1,5 @@
+data "aws_caller_identity" "caller_identity" {}
+
 data "aws_ami" "fedora_coreos" {
   most_recent = true
 
@@ -75,9 +77,26 @@ resource "aws_security_group" "minecraft" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = var.allowlisted_cidr_ranges
+    cidr_blocks = var.allowlisted_cidr_ranges[0]
   }
 
+  # Plan
+  ingress {
+    from_port   = 8804
+    to_port     = 8804
+    protocol    = "tcp"
+    cidr_blocks = var.allowlisted_cidr_ranges[0]
+  }
+
+  # Bluemap
+  ingress {
+    from_port   = 8100
+    to_port     = 8100
+    protocol    = "tcp"
+    cidr_blocks = var.allowlisted_cidr_ranges[0]
+  }
+
+  # Java Edition
   ingress {
     from_port   = 25565
     to_port     = 25565
@@ -85,6 +104,7 @@ resource "aws_security_group" "minecraft" {
     cidr_blocks = var.allowlisted_cidr_ranges
   }
 
+  # Bedrock Edition
   ingress {
     from_port = 19132
     to_port = 19132
@@ -148,12 +168,24 @@ data "ct_config" "minecraft" {
   strict = true
 }
 
+resource "aws_eip" "minecraft" {
+  domain = "vpc"
+  tags = {
+    Name       = "${var.app_name} - ${var.deployment_name}"
+    Deployment = var.deployment_name
+  }
+}
+
+resource "aws_eip_association" "minecraft" {
+  instance_id = aws_instance.minecraft.id
+  allocation_id = aws_eip.minecraft.id
+}
+
 resource "aws_instance" "minecraft" {
   ami                         = data.aws_ami.fedora_coreos.id
   instance_type               = var.instance_type
   subnet_id                   = aws_subnet.minecraft.id
   key_name                    = aws_key_pair.minecraft.key_name
-  associate_public_ip_address = true
 
   vpc_security_group_ids = [
     aws_security_group.minecraft.id
@@ -207,4 +239,45 @@ resource "local_sensitive_file" "private_key" {
   content         = tls_private_key.minecraft.private_key_pem
   filename        = pathexpand("${var.private_ssh_key_dir}/${var.app_name}-${var.deployment_name}.pem")
   file_permission = "0600"
+}
+
+resource "aws_s3_bucket" "resource_packs" {
+  bucket = lower("${var.app_name}-${var.deployment_name}-resource-packs")
+  tags = {
+    Name       = "${var.app_name} - ${var.deployment_name} Data"
+    Deployment = var.deployment_name
+  }
+}
+
+data "aws_iam_policy_document" "resource_packs" {
+  statement {
+    actions   = ["s3:GetObject"]
+    effect = "Allow"
+    resources = ["${aws_s3_bucket.resource_packs.arn}/*"]
+    principals {
+      type        = "*"
+      identifiers = ["*"]
+    }
+    condition {
+      test     = "IpAddress"
+      variable = "aws:SourceIp"
+      values = var.allowlisted_cidr_ranges
+    }
+  }
+}
+
+resource "aws_s3_bucket_policy" "bucket_policy" {
+  bucket = aws_s3_bucket.resource_packs.id
+  policy = data.aws_iam_policy_document.resource_packs.json
+}
+
+resource "aws_s3_object" "john_smith_resource_pack" {
+  key    = "John Smith Legacy Bedrock 1.19.83.zip"
+  bucket = aws_s3_bucket.resource_packs.id
+  source = "${path.module}/files/resource-packs/John Smith Legacy Bedrock 1.19.83.zip"
+  force_destroy = true
+  tags = {
+    Name       = "${var.app_name} - ${var.deployment_name} Data"
+    Deployment = var.deployment_name
+  }
 }
