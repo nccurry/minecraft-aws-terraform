@@ -22,12 +22,12 @@ data "ct_config" "minecraft" {
     })
 
     download_papermc_plugins_service_contents = templatefile("${path.module}/files/systemd/download-papermc-plugins.service.tpl", {
-      mcserver_data_dir         = var.mcserver_data_dir
+      mcserver_data_dir = var.mcserver_data_dir
     })
 
     mcserver_service_contents = templatefile("${path.module}/files/systemd/mcserver.service.tpl", {
       mcserver_data_dir         = var.mcserver_data_dir
-      papermc_container_image = var.papermc_container_image
+      papermc_container_image   = var.papermc_container_image
       papermc_container_tag     = var.papermc_container_tag
       papermc_server_memorysize = var.papermc_server_memory_size
     })

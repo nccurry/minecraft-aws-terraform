@@ -6,8 +6,8 @@ variable "data_volume_device_path" {
 # https://github.com/mtoensing/Docker-Minecraft-PaperMC-Server
 variable "papermc_container_image" {
   description = "The container image to use for the papermc container"
-  type = string
-  default = "docker.io/marctv/minecraft-papermc-server"
+  type        = string
+  default     = "docker.io/marctv/minecraft-papermc-server"
 }
 
 # https://hub.docker.com/r/marctv/minecraft-papermc-server/tags

@@ -15,7 +15,7 @@ for file in "$${!files[@]}"; do
     url=$${files[$file]}
     # If the file doesn't exist, download it
     if [[ ! -f $file ]]; then
-        curl -o "$file" "$url"
+        curl -o "$pluginDir/$file" "$url"
     fi
 done
 

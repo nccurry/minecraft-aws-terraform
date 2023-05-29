@@ -17,7 +17,7 @@ resource "aws_vpc" "vpc" {
   enable_dns_hostnames = true
   tags = {
     Name       = "${var.app_name} - ${var.deployment_name}"
-    App = var.app_name
+    App        = var.app_name
     Deployment = var.deployment_name
   }
 }
@@ -27,7 +27,7 @@ resource "aws_subnet" "subnet" {
   cidr_block = var.subnet_cidr_block
   tags = {
     Name       = "${var.app_name} - ${var.deployment_name}"
-    App = var.app_name
+    App        = var.app_name
     Deployment = var.deployment_name
   }
 }
@@ -37,7 +37,7 @@ resource "aws_internet_gateway" "internet_gateway" {
 
   tags = {
     Name       = "${var.app_name} - ${var.deployment_name}"
-    App = var.app_name
+    App        = var.app_name
     Deployment = var.deployment_name
   }
 }
@@ -52,7 +52,7 @@ resource "aws_route_table" "route_table" {
 
   tags = {
     Name       = "${var.app_name} - ${var.deployment_name}"
-    App = var.app_name
+    App        = var.app_name
     Deployment = var.deployment_name
   }
 }

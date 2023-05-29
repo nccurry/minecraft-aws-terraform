@@ -10,12 +10,12 @@ variable "deployment_name" {
 
 variable "aws_region" {
   description = "The AWS Region to deploy infrastructure into"
-  type = string
+  type        = string
 }
 
 variable "vpc_id" {
   description = "The ID of the AWS VPC in which to place the EC2 instance"
-  type = string
+  type        = string
 }
 
 variable "subnet_id" {
@@ -40,11 +40,15 @@ variable "ec2_instance_type" {
 
 variable "ec2_user_data" {
   description = "The UserData to pass to the EC2 instance"
-  type = string
+  type        = string
+}
+
+variable "data_volume_device_path" {
+  description = "The device path of the EBS volume for storing server data"
+  type        = string
 }
 
 variable "ebs_data_volume_size" {
   description = "The size of the EBS volume for the Minecraft data"
   type        = number
-  default     = 50
 }

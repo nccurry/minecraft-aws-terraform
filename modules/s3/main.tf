@@ -11,7 +11,7 @@ resource "aws_s3_bucket" "resource_packs" {
   bucket = lower("${var.app_name}-${var.deployment_name}-resource-packs")
   tags = {
     Name       = "${var.app_name} - ${var.deployment_name} Data"
-    App = var.app_name
+    App        = var.app_name
     Deployment = var.deployment_name
   }
 }
@@ -19,7 +19,7 @@ resource "aws_s3_bucket" "resource_packs" {
 data "aws_iam_policy_document" "resource_packs" {
   statement {
     actions   = ["s3:GetObject"]
-    effect = "Allow"
+    effect    = "Allow"
     resources = ["${aws_s3_bucket.resource_packs.arn}/*"]
     principals {
       type        = "*"
@@ -28,7 +28,7 @@ data "aws_iam_policy_document" "resource_packs" {
     condition {
       test     = "IpAddress"
       variable = "aws:SourceIp"
-      values = var.allowlisted_cidr_ranges
+      values   = var.allowlisted_cidr_ranges
     }
   }
 }
@@ -39,13 +39,13 @@ resource "aws_s3_bucket_policy" "bucket_policy" {
 }
 
 resource "aws_s3_object" "john_smith_resource_pack" {
-  key    = "John Smith Legacy Bedrock 1.19.83.zip"
-  bucket = aws_s3_bucket.resource_packs.id
-  source = "${path.module}/files/resource-packs/John Smith Legacy Bedrock 1.19.83.zip"
+  key           = "John Smith Legacy Bedrock 1.19.83.zip"
+  bucket        = aws_s3_bucket.resource_packs.id
+  source        = "${path.module}/files/resource-packs/John Smith Legacy Bedrock 1.19.83.zip"
   force_destroy = true
   tags = {
     Name       = "${var.app_name} - ${var.deployment_name} Data"
-    App = var.app_name
+    App        = var.app_name
     Deployment = var.deployment_name
   }
 }

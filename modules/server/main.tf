@@ -5,11 +5,11 @@ terraform {
       version = ">= 5.0.1, < 6.0.0"
     }
     tls = {
-      source = "hashicorp/tls"
+      source  = "hashicorp/tls"
       version = ">= 4.0.4, < 5.0.0"
     }
     null = {
-      source = "hashicorp/null"
+      source  = "hashicorp/null"
       version = ">= 3.2.1, < 4.0.0"
     }
   }
@@ -78,9 +78,9 @@ resource "aws_security_group" "security_group" {
 
   # Bedrock Edition
   ingress {
-    from_port = 19132
-    to_port = 19132
-    protocol = "udp"
+    from_port   = 19132
+    to_port     = 19132
+    protocol    = "udp"
     cidr_blocks = var.allowlisted_cidr_blocks
   }
 
@@ -93,7 +93,7 @@ resource "aws_security_group" "security_group" {
 
   tags = {
     Name       = "${var.app_name} - ${var.deployment_name}"
-    App = var.app_name
+    App        = var.app_name
     Deployment = var.deployment_name
   }
 }
@@ -108,14 +108,14 @@ resource "aws_key_pair" "key_pair" {
   public_key = tls_private_key.private_key.public_key_openssh
   tags = {
     Name       = "${var.app_name} - ${var.deployment_name}"
-    App = var.app_name
+    App        = var.app_name
     Deployment = var.deployment_name
   }
 }
 
 resource "aws_secretsmanager_secret" "public_key" {
-  name_prefix = "${var.app_name}-${var.deployment_name}-public-key"
-  recovery_window_in_days = 0
+  name_prefix                    = "${var.app_name}-${var.deployment_name}-public-key"
+  recovery_window_in_days        = 0
   force_overwrite_replica_secret = true
 }
 
@@ -125,8 +125,8 @@ resource "aws_secretsmanager_secret_version" "public_key" {
 }
 
 resource "aws_secretsmanager_secret" "private_key" {
-  name_prefix = "${var.app_name}-${var.deployment_name}-private-key"
-  recovery_window_in_days = 0
+  name_prefix                    = "${var.app_name}-${var.deployment_name}-private-key"
+  recovery_window_in_days        = 0
   force_overwrite_replica_secret = true
 }
 
@@ -139,13 +139,13 @@ resource "aws_eip" "eip" {
   domain = "vpc"
   tags = {
     Name       = "${var.app_name} - ${var.deployment_name}"
-    App = var.app_name
+    App        = var.app_name
     Deployment = var.deployment_name
   }
 }
 
 resource "aws_eip_association" "eip_association" {
-  instance_id = aws_instance.instance.id
+  instance_id   = aws_instance.instance.id
   allocation_id = aws_eip.eip.id
 }
 
@@ -157,12 +157,12 @@ resource "null_resource" "user_data_trigger" {
 
 resource "aws_instance" "instance" {
   lifecycle {
-    replace_triggered_by  = [null_resource.user_data_trigger]
+    replace_triggered_by = [null_resource.user_data_trigger]
   }
-  ami                         = data.aws_ami.fedora_coreos.id
-  instance_type               = var.ec2_instance_type
-  subnet_id                   = var.subnet_id
-  key_name                    = aws_key_pair.key_pair.key_name
+  ami               = data.aws_ami.fedora_coreos.id
+  instance_type     = var.ec2_instance_type
+  subnet_id         = var.subnet_id
+  key_name          = aws_key_pair.key_pair.key_name
   availability_zone = var.availability_zone
 
   vpc_security_group_ids = [
@@ -173,7 +173,7 @@ resource "aws_instance" "instance" {
 
   tags = {
     Name       = "${var.app_name} - ${var.deployment_name}"
-    App = var.app_name
+    App        = var.app_name
     Deployment = var.deployment_name
   }
 }
@@ -181,15 +181,17 @@ resource "aws_instance" "instance" {
 resource "aws_ebs_volume" "ebs_volume" {
   availability_zone = var.availability_zone
   size              = var.ebs_data_volume_size
+  type              = "gp3"
   tags = {
     Name       = "${var.app_name} - ${var.deployment_name} Data"
-    App = var.app_name
+    App        = var.app_name
     Deployment = var.deployment_name
+    Snapshot   = "true"
   }
 }
 
 resource "aws_volume_attachment" "volume_attachment" {
-  device_name = "/dev/sdf" # Not 100% sure why this value
+  device_name = "/dev/xvdf" # Not sure what's going on this this name
   volume_id   = aws_ebs_volume.ebs_volume.id
   instance_id = aws_instance.instance.id
 }

@@ -10,17 +10,17 @@ variable "deployment_name" {
 
 variable "aws_region" {
   description = "The AWS Region to deploy infrastructure into"
-  type = string
+  type        = string
 }
 
 variable "vpc_cidr_block" {
   description = "The CIDR range of the VPC"
-  type = string
-  default = "10.0.0.0/26"
+  type        = string
+  default     = "10.0.0.0/26"
 }
 
 variable "subnet_cidr_block" {
   description = "The CIDR range of the subnet"
-  type = string
-  default = "10.0.0.0/28"
+  type        = string
+  default     = "10.0.0.0/28"
 }

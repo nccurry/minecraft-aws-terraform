@@ -1,4 +1,4 @@
-credentials.env
+*.env
 .idea
 .terraform
 *.tfstate
@@ -6,4 +6,4 @@ credentials.env
 .terraform/
 .terraform.lock.hcl
 .terraform.tfstate.lock.info
-terraform.tfvars
+*.tfvars

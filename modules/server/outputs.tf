@@ -3,6 +3,6 @@ output "public_ip_address" {
 }
 
 output "private_key" {
-  value = aws_secretsmanager_secret_version.private_key.secret_string
+  value     = aws_secretsmanager_secret_version.private_key.secret_string
   sensitive = true
 }
