@@ -1,30 +1,36 @@
 #!/usr/bin/env bash
+# Script to backup and shutdown the server when there are no users
 
-log_message() {
+waitTimeSeconds=1800 # 30 minutes
+
+logMessage() {
     systemd-cat -t "shutdown-when-inactive.sh" <<< "$(date +"%Y-%m-%d %H:%M:%S") $1"
 }
 
-api_endpoint="http://localhost:4567/v1/server"
-onlinePlayers=$(curl -s "$api_endpoint" | jq '.onlinePlayers')
+apiEndpoint="http://localhost:4567/v1/server"
+onlinePlayers=$(curl -s "$apiEndpoint" | jq '.onlinePlayers')
 
 if [[ "$onlinePlayers" -eq 0 ]]; then
-    log_message "Current player count is 0."
+    logMessage "Current player count is 0."
 
     # Check if server was already marked for shutdown
     if [[ -f "/tmp/server_shutdown" ]]; then
-        shutdown_duration=$(($(date +%s) - $(stat -c %Y /tmp/server_shutdown)))
+        timeLeftSeconds=$(($(date +%s) - $(stat -c %Y /tmp/server_shutdown)))
 
         # Check if shutdown duration exceeds 10 minutes
-        if [[ "$shutdown_duration" -ge 600 ]]; then
-            log_message "Current player count has been 0 for more than 10 minutes. Initiating server shutdown."
-            # Uncomment the line below to initiate the server shutdown command
-            # shutdown -h now
+        if [[ "$timeLeftSeconds" -ge $waitTimeSeconds ]]; then
+            logMessage "Current player count has been 0 for more than $waitTimeSeconds seconds. Initiating server shutdown."
+            systemctl stop mcserver.service
+            # TODO: Implement automatic backup here
+            shutdown -h now
+        else
+          logMessage "Current player is 0. Shutting down in $timeLeftSeconds seconds."
         fi
     else
-        log_message "Marking server for shutdown."
-        touch /tmp/server_shutdown
+        logMessage "Marking server for shutdown in $waitTimeSeconds seconds."
+        echo "Server marked for shutdown" > /tmp/server_shutdown
     fi
 else
-    log_message "Current player count is $onlinePlayers, not 0. Clearing shutdown status."
+    logMessage "Current player count is $onlinePlayers. Clearing shutdown status."
     rm -f /tmp/server_shutdown
 fi
