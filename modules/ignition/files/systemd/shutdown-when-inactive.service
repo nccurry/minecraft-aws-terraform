@@ -1,0 +1,8 @@
+[Unit]
+Description=Shutdown the server when it is inactive
+
+[Service]
+ExecStart=/usr/local/bin/shutdown-when-inactive.sh
+
+[Install]
+WantedBy=multi-user.target

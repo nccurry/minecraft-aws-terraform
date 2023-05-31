@@ -32,6 +32,7 @@ ExecStart=/usr/bin/podman run \
         --publish 19132:19132/udp \
         --publish 8804:8804/tcp \
         --publish 8100:8100/tcp \
+        --publish 4567:4567/tcp \
         ${papermc_container_image}:${papermc_container_tag}
 
 ExecStop=/usr/bin/podman stop \

@@ -9,6 +9,7 @@ declare -A files=(
     ["floodgate-bukkit.jar"]="https://download.geysermc.org/v2/projects/floodgate/versions/latest/builds/latest/downloads/spigot"
     ["Plan-5.5-build-2391.jar"]="https://github.com/plan-player-analytics/Plan/releases/download/5.5.2391/Plan-5.5-build-2391.jar"
     ["BlueMap-3.13-spigot.jar"]="https://github.com/BlueMap-Minecraft/BlueMap/releases/download/v3.13/BlueMap-3.13-spigot.jar"
+    ["ServerTap-0.5.3.jar"]="https://github.com/phybros/servertap/releases/download/v0.5.3/ServerTap-0.5.3.jar"
 )
 
 for file in "$${!files[@]}"; do

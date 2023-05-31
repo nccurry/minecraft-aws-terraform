@@ -1,0 +1,9 @@
+[Unit]
+Description=Shutdown the server when it is inactive
+
+[Timer]
+OnCalendar=*:0/10
+Persistent=true
+
+[Install]
+WantedBy=timers.target

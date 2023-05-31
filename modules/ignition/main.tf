@@ -21,6 +21,10 @@ data "ct_config" "minecraft" {
       ebs_volume_device = var.data_volume_device_path
     })
 
+    shutdown_when_inactive_sh_contents = file("${path.module}/files/scripts/shutdown-when-inactive.sh")
+    shutdown_when_inactive_timer_contents = file("${path.module}/files/systemd/shutdown-when-inactive.timer")
+    shutdown_when_inactive_service_contents = file("${path.module}/files/systemd/shutdown-when-inactive.service")
+
     download_papermc_plugins_service_contents = templatefile("${path.module}/files/systemd/download-papermc-plugins.service.tpl", {
       mcserver_data_dir = var.mcserver_data_dir
     })

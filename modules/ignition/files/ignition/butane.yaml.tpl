@@ -24,8 +24,21 @@ storage:
       inline: |
         ${indent(8, download_papermc_plugins_sh_contents)}
     mode: 0774
+  - path: /usr/local/bin/shutdown-when-inactive.sh
+    contents:
+      inline: |
+        ${indent(8, shutdown_when_inactive_sh_contents)}
+    mode: 0774
 systemd:
   units:
+  - name: shutdown-when-inactive.timer
+    enabled: true
+    contents: |
+      ${indent(6, shutdown_when_inactive_timer_contents)}
+  - name: shutdown-when-inactive.service
+    enabled: false
+    contents: |
+      ${indent(6, shutdown_when_inactive_service_contents)}
   - name: download-papermc-plugins.service
     enabled: true
     contents: |
