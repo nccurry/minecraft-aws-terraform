@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Script to backup and shutdown the server when there are no users
 
-waitTimeSeconds=1800 # 30 minutes
+waitTimeSeconds=3600 # 60 minutes
 
 logMessage() {
     systemd-cat -t "shutdown-when-inactive.sh" <<< "$(date +"%Y-%m-%d %H:%M:%S") $1"
